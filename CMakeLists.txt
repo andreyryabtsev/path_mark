@@ -17,13 +17,10 @@ add_library(${PROJECT_NAME}
     src/Robot.cc
     src/NLinkArm.h
     src/World.cc
-)
-add_library(Visualizer
     src/Visualizer.cc
 )
-target_link_libraries(Visualizer ${SDL2_LIBRARIES})
+
+target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 
 add_executable(client src/client.cc)
-target_link_libraries(client #{PROJECT_NAME}
-    )
-target_link_libraries(client Visualizer)
+target_link_libraries(client ${PROJECT_NAME})
