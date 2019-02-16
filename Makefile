@@ -1,4 +1,4 @@
-OBJFILES = World.o Robot.o NLinkArm.o
+OBJFILES = World.o Robot.o NLinkArm.o client.o
 HEADERS = World.h Robot.h NLinkArm.h
 EXE = client
 CPPFLAGS = -Wall -g -std=c++11
