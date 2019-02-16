@@ -12,20 +12,27 @@ class NLinkArm : public Robot {
  public:
     bool inCollision(const std::vector<double> &state, const World &world) override {
         assert(state.size() == N);
-        // Assuming for the moment that each link is 1.00 long
+        for (Line link : toLineArray(state)) {
+            if (world.lineInCollision(link)) return true;
+        }
+        return false;
+    }
+ private:
+    static std::vector<Line> toLineArray(const std::vector<double> &state) {
+        std::vector<Line> out;
         double curX = 0.0, curY = 0.0, curTheta = 0.0;
         for (double theta : state) {
             double nextTheta = curTheta + theta;
             double nextX = curX + LINK_LENGTH * cos(nextTheta);
             double nextY = curY + LINK_LENGTH * sin(nextTheta);
-            if (world.lineInCollision(Line(curX, curY, nextX, nextY))) return true;
+            out.push_back(Line(curX, curY, nextX, nextY));
             curTheta = nextTheta;
             curX = nextX;
             curY = nextY;
         }
-        return true;
+        return out;
     }
- private:
+
     double mState[N];
 };
 

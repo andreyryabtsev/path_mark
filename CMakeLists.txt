@@ -5,19 +5,25 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 add_compile_options(-Wall -Wextra -Wpedantic)
 
 find_package(Eigen3 REQUIRED)
+find_package(SDL2 REQUIRED)
 
 include_directories(
     include
     ${EIGEN3_INCLUDE_DIR}
+    ${SDL2_INCLUDE_DIRS}
 )
 
 add_library(${PROJECT_NAME}
     src/Robot.cc
     src/NLinkArm.h
     src/World.cc
-    src/client.cc
 )
+add_library(Visualizer
+    src/Visualizer.cc
+)
+target_link_libraries(Visualizer ${SDL2_LIBRARIES})
 
 add_executable(client src/client.cc)
 target_link_libraries(client #{PROJECT_NAME}
     )
+target_link_libraries(client Visualizer)
