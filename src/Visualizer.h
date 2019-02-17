@@ -1,7 +1,8 @@
 #ifndef _VISUALIZER_H_
 #define _VISUALIZER_H_
+#include "Renderer.h"
 namespace visualizer {
-bool openVisualizer();
+Renderer openVisualizer();
 void closeVisualizer();
 }
 #endif

@@ -18,6 +18,8 @@ add_library(${PROJECT_NAME}
     src/NLinkArm.h
     src/World.cc
     src/Visualizer.cc
+    src/Renderer.cc
+    src/Drawable.h
 )
 
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
