@@ -1,4 +1,5 @@
 #ifndef _N_LINK_ARM_H_
+#define _N_LINK_ARM_H_
 
 #include <assert.h>
 #include <math.h>
