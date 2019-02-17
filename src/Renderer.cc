@@ -2,6 +2,10 @@
 #include "Line.h"
 #include "Renderer.h"
 
+void Renderer::flush() {
+    SDL_RenderPresent(sdl_renderer);
+}
+
 void Renderer::clear() {
     SDL_SetRenderDrawColor(sdl_renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(sdl_renderer);
@@ -16,5 +20,5 @@ void Renderer::drawLine(const Line& l) {
 Line Renderer::scaleLine(const Line& l) {
     int w, h;
     SDL_GetRendererOutputSize(sdl_renderer, &w, &h);
-    return Line(l.x1 * w, l.y1 * h, l.x2 * w, l.y2 * h);
+    return Line(l.x1 * w, h - l.y1 * h, l.x2 * w, h - l.y2 * h);
 }

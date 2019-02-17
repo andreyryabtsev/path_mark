@@ -20,5 +20,4 @@ bool World::lineInCollision(const Line& l) const {
 
 void World::draw(Renderer& renderer) {
     renderer.clear();
-    renderer.drawLine(Line(0.2, 0.2, 0.6, 0.6));
 }

@@ -4,13 +4,18 @@
 #include "World.h"
 #include <iostream>
 
-int main(){//int argc, char** argv) {
+int main() {
     World w;
-    NLinkArm<3> arm;
+    std::vector<double> initState;
+    double initStateArray[3] = {0.1, 0.5, -0.2};
+    initState.assign(initStateArray, initStateArray + 3);
+    NLinkArm<3> arm(initState);
     Renderer r = visualizer::openVisualizer();
     w.draw(r);
-    int a;
-    std::cin >> a;
+    arm.draw(r);
+    r.flush();
+
+    std::cin.get();
     visualizer::closeVisualizer();
 
     return 0;

@@ -6,6 +6,7 @@ class Renderer {
  public:
     Renderer(SDL_Renderer* sdl) : sdl_renderer(sdl) {}
     void clear();
+    void flush();
     void drawLine(const Line& l);
  private:
     Line scaleLine(const Line&);

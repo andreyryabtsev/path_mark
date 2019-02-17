@@ -18,9 +18,6 @@ bool windowOpen = false;
 std::thread *loopThread;
 Uint32 eventType;
 
-// visualization fields
-World world_;
-
 
 void _renderLoop();
 
@@ -65,18 +62,10 @@ void _renderLoop() {
     bool loop = true;
     while (loop){
         SDL_Event event;
-
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-        SDL_RenderDrawLine(renderer, 320, 200, 300, 240);
-        SDL_RenderDrawLine(renderer, 300, 240, 340, 240);
-        SDL_RenderDrawLine(renderer, 340, 240, 320, 200);
-        SDL_RenderPresent(renderer);
-        if (SDL_WaitEvent(&event))
-        {
+        if (SDL_WaitEvent(&event)) {
             if (event.type == eventType) {
                 switch (event.user.code) {
                     case EXIT_CODE:
-                        std::cout << "Received client event: code " << event.user.code << std::endl;
                         loop = false;
                         break;
                 }

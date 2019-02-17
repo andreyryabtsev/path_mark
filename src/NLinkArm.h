@@ -13,6 +13,15 @@
 template <int N>
 class NLinkArm : public Robot {
  public:
+    NLinkArm() {
+        for(int i = 0; i < N; i++) mState.push_back(0.0);
+    }
+
+    NLinkArm(std::vector<double> state) {
+        assert(state.size() == N);
+        mState = state;
+    }
+
     bool inCollision(const World &world) override {
         return inCollision(mState, world);
     }
@@ -23,6 +32,12 @@ class NLinkArm : public Robot {
         }
         return false;
     }
+    void draw(Renderer& renderer) {
+        for (Line link : toLineArray(mState)) {
+            renderer.drawLine(link);
+        }
+    }
+
  private:
     static std::vector<Line> toLineArray(const std::vector<double> &state) {
         std::vector<Line> out;
