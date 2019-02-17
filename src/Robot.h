@@ -5,7 +5,7 @@
 #define _ROBOT_H_
 class Robot {
  public:
-    virtual bool inCollision(const std::vector<double>&, const World&);
+    virtual bool inCollision(const World&);
  protected:
 };
 #endif

@@ -10,7 +10,10 @@
 template <int N>
 class NLinkArm : public Robot {
  public:
-    bool inCollision(const std::vector<double> &state, const World &world) override {
+    bool inCollision(const World &world) override {
+        return inCollision(mState, world);
+    }
+    static bool inCollision(const std::vector<double> &state, const World &world) {
         assert(state.size() == N);
         for (Line link : toLineArray(state)) {
             if (world.lineInCollision(link)) return true;
@@ -33,7 +36,7 @@ class NLinkArm : public Robot {
         return out;
     }
 
-    double mState[N];
+    std::vector<double> mState;
 };
 
 #endif
