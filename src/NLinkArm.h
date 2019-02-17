@@ -6,7 +6,9 @@
 #include "Robot.h"
 #include "Line.h"
 
-#define LINK_LENGTH 1.0
+#define LINK_LENGTH 0.15
+#define ROOT_X 0.5
+#define ROOT_Y 0.5
 
 template <int N>
 class NLinkArm : public Robot {
@@ -24,7 +26,7 @@ class NLinkArm : public Robot {
  private:
     static std::vector<Line> toLineArray(const std::vector<double> &state) {
         std::vector<Line> out;
-        double curX = 0.0, curY = 0.0, curTheta = 0.0;
+        double curX = ROOT_X, curY = ROOT_Y, curTheta = 0.0;
         for (double theta : state) {
             double nextTheta = curTheta + theta;
             double nextX = curX + LINK_LENGTH * cos(nextTheta);
