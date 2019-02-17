@@ -2,5 +2,6 @@
 #define _VISUALIZER_H_
 namespace visualizer {
 bool openVisualizer();
+void closeVisualizer();
 }
 #endif

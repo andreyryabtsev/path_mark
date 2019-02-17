@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 project(path_mark)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -pthread")
 
 add_compile_options(-Wall -Wextra -Wpedantic)
 
