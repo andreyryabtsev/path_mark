@@ -39,6 +39,7 @@ Renderer openVisualizer() {
         SDL_Quit();
         return nullptr;
     }
+    SDL_SetWindowTitle(window, "PathMark");
 
     loopThread = new std::thread(_renderLoop);
 

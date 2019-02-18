@@ -14,7 +14,7 @@ include_directories(
 )
 
 add_library(${PROJECT_NAME}
-    src/Robot.cc
+    src/Robot.h
     src/NLinkArm.h
     src/World.cc
     src/Visualizer.cc
