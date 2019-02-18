@@ -5,9 +5,9 @@
 #include <iostream>
 
 int main() {
-    World w("/home/andrey/projects/path_mark/resources/worlds/test.world");
+    World w("../resources/worlds/test.world");
     std::vector<double> initState;
-    double initStateArray[3] = {0.1, 0.5, -0.2};
+    double initStateArray[3] = {0.1, 1.2, -0.7};
     initState.assign(initStateArray, initStateArray + 3);
     NLinkArm<3> arm(initState);
     Renderer r = visualizer::openVisualizer();
