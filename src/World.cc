@@ -44,5 +44,13 @@ World::World(const std::string& filepath) {
 
 void World::draw(Renderer& renderer) {
     renderer.clear();
-    
+    renderer.setColor(180, 180, 180);
+    for(int i = 1; i < 10; i++) {
+        renderer.drawLine(Line(i / 10.0, 0, i / 10.0, 1));
+        renderer.drawLine(Line(0, i / 10.0, 1, i / 10.0));
+    }
+    renderer.setColor(0, 0, 0);
+    for(Rect o : obstacles_) {
+        renderer.fillRect(o);
+    }
 }

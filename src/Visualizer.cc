@@ -22,28 +22,28 @@ Uint32 eventType;
 void _renderLoop();
 
 Renderer openVisualizer() {
-    if (windowOpen) return nullptr;
+    if (windowOpen) throw;
     windowOpen = true;
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "could not initialize sdl2: " << SDL_GetError() << std::endl;
         SDL_Quit();
-        return nullptr;
+        throw;
     }
     if(!SDL_CreateWindowAndRenderer(SIZE_X, SIZE_Y, SDL_WINDOW_SHOWN, &window, &renderer) == 0) {
         std::cerr << "could not create window: " << SDL_GetError() << std::endl;
         SDL_Quit();
-        return nullptr;
+        throw;
     }
     if((eventType = SDL_RegisterEvents(1)) == ((Uint32)-1)) {
         std::cerr << "could not register event: " << SDL_GetError() << std::endl;
         SDL_Quit();
-        return nullptr;
+        throw;
     }
     SDL_SetWindowTitle(window, "PathMark");
 
     loopThread = new std::thread(_renderLoop);
 
-    return Renderer(renderer);
+    return Renderer(renderer, SIZE_X, SIZE_Y);
 }
 
 void closeVisualizer() {

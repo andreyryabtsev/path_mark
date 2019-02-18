@@ -33,6 +33,7 @@ class NLinkArm : public Robot {
         return false;
     }
     void draw(Renderer& renderer) {
+        renderer.setColor(0, 0, 0);
         for (Line link : toLineArray(mState)) {
             renderer.drawLine(link);
         }
