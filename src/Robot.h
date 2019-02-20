@@ -1,3 +1,7 @@
+/*
+A pure virtual Robot class that extends Drawable and defines an interface all
+robots share.
+*/
 #include "World.h"
 #include <vector>
 

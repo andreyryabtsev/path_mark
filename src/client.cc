@@ -1,6 +1,5 @@
 #include "NLinkArm.h"
 #include "Visualizer.h"
-#include "Renderer.h"
 #include "World.h"
 #include <iostream>
 
