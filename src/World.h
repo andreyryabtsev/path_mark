@@ -23,5 +23,9 @@ class World : Drawable {
  private:
     // the rectangular obstacles of this world
     std::vector<Rect> obstacles_;
+    // the name of the graph that this world was built for
+    string graph_name_;
+    // the start and target nodes in the graph for this world
+    int start_node_, target_node_;
 };
 #endif

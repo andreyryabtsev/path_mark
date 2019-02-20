@@ -37,6 +37,7 @@ World::World(const std::string& filepath) {
     std::ifstream worldfile;
     worldfile.open(filepath);
     if (!worldfile.is_open()) throw;
+    worldfile >> graph_name_ >> start_node_ >> target_node_;
     int numObstacles;
     worldfile >> numObstacles;
     for(int i = 0; i < numObstacles; i++) {
