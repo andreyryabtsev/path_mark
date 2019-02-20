@@ -10,20 +10,20 @@ worlds span the rectangle between (0, 0) and (1, 1).
 #include "Rect.h"
 #include "Drawable.h"
 #include "Line.h"
-class World : Drawable {
+class World : public Drawable {
  public:
     // Constructs an empty world
     World();
     // Reads in a world from a savefile
     World(const std::string& filepath);
     // Gets the start node id in the attached graph
-    getStartId();
+    int getStartId() const;
     // Gets the target node id in the attached graph
-    getTargetId();
+    int getTargetId() const;
     // Checks whether a line is in collision with the obstacles in this world
     bool lineInCollision(const Line& l) const;
     // Draws the world using a Renderer
-    void draw(Renderer& renderer) override;
+    void draw(Renderer& renderer) const override;
  private:
     // the rectangular obstacles of this world
     std::vector<Rect> obstacles_;

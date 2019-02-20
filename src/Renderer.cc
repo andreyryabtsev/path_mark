@@ -2,6 +2,7 @@
 #include "Line.h"
 #include "Rect.h"
 #include "Renderer.h"
+#include "Drawable.h"
 
 void Renderer::flush() {
     SDL_RenderPresent(sdl_renderer);
@@ -14,6 +15,10 @@ void Renderer::clear() {
 
 void Renderer::setColor(int r, int g, int b) {
     SDL_SetRenderDrawColor(sdl_renderer, r, g, b, SDL_ALPHA_OPAQUE);
+}
+
+void Renderer::draw(const Drawable& d) {
+    d.draw(*this);
 }
 
 void Renderer::drawLine(const Line& l) {

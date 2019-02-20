@@ -7,7 +7,7 @@ robots share.
 
 #ifndef _ROBOT_H_
 #define _ROBOT_H_
-class Robot : Drawable{
+class Robot : public Drawable{
  public:
     virtual bool inCollision(const World&) = 0;
  protected:

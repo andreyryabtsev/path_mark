@@ -9,6 +9,8 @@ values appropriate for the window's dimensions while providing a simple interfac
 #include <SDL2/SDL.h>
 #include "Line.h"
 #include "Rect.h"
+#include "Drawable.h"
+class Drawable;
 class Renderer {
  public:
     // Constructs a new renderer using an underlying SDL renderer and dimensions
@@ -20,6 +22,9 @@ class Renderer {
     // Pushes all the queued renders out onto display. This method should be
     // called whenever the screen is expected to be updated with new changes.
     void flush();
+
+    // Draws a Drawable object as specified
+    void draw(const Drawable& d);
 
     // Draws a line on the canvas using the current color
     void drawLine(const Line& l);

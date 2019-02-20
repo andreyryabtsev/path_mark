@@ -28,8 +28,8 @@ bool World::lineInCollision(const Line& l) const {
     return false;
 }
 
-int World::getStartId() { return start_node_; }
-int World::getTargetID() { return target_node_; }
+int World::getStartId() const { return start_node_; }
+int World::getTargetId() const { return target_node_; }
 
 World::World() {
     obstacles_ = std::vector<Rect>();
@@ -52,7 +52,7 @@ World::World(const std::string& filepath) {
     worldfile.close();
 }
 
-void World::draw(Renderer& renderer) {
+void World::draw(Renderer& renderer) const {
     renderer.setColor(255, 255, 255);
     // clear everything first
     renderer.clear();

@@ -29,6 +29,12 @@ class NLinkArm : public Robot {
         mState = state;
     }
 
+    // Updates the state to what is represented in state
+    void setState(std::vector<double> state) {
+        assert(state.size() == N);
+        mState = state;
+    }
+
     // Returns whether the robot in its current state collides with a World
     bool inCollision(const World &world) override {
         return inCollision(mState, world);
@@ -45,7 +51,7 @@ class NLinkArm : public Robot {
     }
 
     // overrides Drawable's draw() to display the robot
-    void draw(Renderer& renderer) override {
+    void draw(Renderer& renderer) const override {
         renderer.setColor(0, 0, 0);
         for (Line link : toLineArray(mState)) {
             renderer.drawLine(link);

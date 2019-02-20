@@ -27,5 +27,5 @@ target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 add_executable(client src/client.cc)
 target_link_libraries(client ${PROJECT_NAME})
 
-add_executable(gls_test src/gls_test.cc)
-target_link_libraries(gls_test ${PROJECT_NAME})# ${OpenCV_LIBS})
+# add_executable(gls_test src/gls_test.cc)
+# target_link_libraries(gls_test ${PROJECT_NAME})# ${OpenCV_LIBS})

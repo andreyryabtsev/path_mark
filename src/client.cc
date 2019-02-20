@@ -10,8 +10,8 @@ int main() {
     initState.assign(initStateArray, initStateArray + 3);
     NLinkArm<3> arm(initState);
     Renderer r = visualizer::openVisualizer();
-    w.draw(r);
-    arm.draw(r);
+    r.draw(w);
+    r.draw(arm);
     r.flush();
 
     std::cin.get();
