@@ -28,6 +28,9 @@ bool World::lineInCollision(const Line& l) const {
     return false;
 }
 
+int World::getStartId() { return start_node_; }
+int World::getTargetID() { return target_node_; }
+
 World::World() {
     obstacles_ = std::vector<Rect>();
 }

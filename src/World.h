@@ -16,6 +16,10 @@ class World : Drawable {
     World();
     // Reads in a world from a savefile
     World(const std::string& filepath);
+    // Gets the start node id in the attached graph
+    getStartId();
+    // Gets the target node id in the attached graph
+    getTargetId();
     // Checks whether a line is in collision with the obstacles in this world
     bool lineInCollision(const Line& l) const;
     // Draws the world using a Renderer
@@ -24,7 +28,7 @@ class World : Drawable {
     // the rectangular obstacles of this world
     std::vector<Rect> obstacles_;
     // the name of the graph that this world was built for
-    string graph_name_;
+    std::string graph_name_;
     // the start and target nodes in the graph for this world
     int start_node_, target_node_;
 };
