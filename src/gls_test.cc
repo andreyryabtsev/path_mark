@@ -5,6 +5,8 @@
 #include <sstream>
 #include <queue>
 
+#include <unistd.h>
+
 // Boost libraries
 #include <boost/shared_ptr.hpp>
 #include <boost/property_map/dynamic_property_map.hpp>
@@ -33,60 +35,38 @@
 
 namespace po = boost::program_options;
 
-/// Check if the point is within defined hyperrectangle
-/// This is bound to the stateValidityChecker of the ompl StateSpace
-/// \param[in] image Obstacle image (grayscale)
-/// \param[in] state The ompl state to check for validity
-/// \return True if the state is collision-free
-// bool isPointValid(cv::Mat image, const ompl::base::State *state)
-// {
-//   // Obtain the state values
-//   double* values = state->as<ompl::base::RealVectorStateSpace::StateType>()->values;
-
-//   // Get the required point on the map
-//   int numberOfRows = image.rows;
-//   int numberOfColumns = image.cols;
-//   double x_point = values[0]*numberOfColumns;
-//   double y_point = (1 - values[1])*numberOfRows;
-//   cv::Point point((int)x_point, (int)y_point);
-
-//   // Collision Check
-//   int intensity = (int)image.at<uchar>(point.y, point.x);
-//   if (intensity == 0) // Pixel is black
-//     return false;
-
-//   return true;
-// }
-
 /// Displays path
-/// \param[in] obstacleFile The file with obstacles stored
+/// \param[in] world the World object containing obstacles
 /// \param[in] path OMPL path
-void displayPath(std::string obstacleFile,
+void displayPath(World world,
                  std::shared_ptr<ompl::geometric::PathGeometric> path)
 {
+  // Get rendering capability from PathMark and open window
+  Renderer r = visualizer::openVisualizer();
+
   // Get state count
   int pathSize = path->getStateCount();
+  NLinkArm<2> arm();
 
-  // Obtain the image matrix
-  cv::Mat image = cv::imread(obstacleFile, 1);
-  int numberOfRows = image.rows;
-  int numberOfColumns = image.cols;
-
-  for (int i = 0; i < pathSize - 1; ++i)
+  // this loop animates using thread sleep.
+  // in the future, PathMark should handle animating a path (given as vector of state vectors or similar)
+  for (int i = 0; i < pathSize; ++i)
   {
-    auto uState = path->getState(i);
-    auto vState = path->getState(i+1);
-    double* u = uState->as<ompl::base::RealVectorStateSpace::StateType>()->values;
-    double* v = vState->as<ompl::base::RealVectorStateSpace::StateType>()->values;
+    auto state = path->getState(i);
+    double* arr_state = state->as<ompl::base::RealVectorStateSpace::StateType>()->values;
+    std::vector<double> vec_state;
+    // not pretty, if ompl types are commonly used PathMark should accept them directly
+    vec_state.assign(arr_state, arr_state + 2);
+    arm.setState(vec_state);
 
-    cv::Point uPoint((int)(u[0]*numberOfColumns), (int)((1 - u[1])*numberOfRows));
-    cv::Point vPoint((int)(v[0]*numberOfColumns), (int)((1 - v[1])*numberOfRows));
 
-    cv::line(image, uPoint, vPoint, cv::Scalar(255, 0, 0), 3);
+    r.draw(world); // draw the world
+    r.draw(arm); // and the arm on top of it at the current moment
+    usleep(16000); // sleep until next frame
   }
 
-  cv::imshow("Solution Path", image);
-  cv::waitKey(0);
+  std::cin.get();
+  visualizer::closeVisualizer();
 }
 
 bool isPointValid(World w, const ompl::base::State *state) {
@@ -132,7 +112,7 @@ int main(int argc, char *argv[])
 
   // Problem Definition
   ompl::base::ProblemDefinitionPtr pdef(new ompl::base::ProblemDefinition(si));
-  pdef->addStartState(make_state(space, source[0], source[1]));
+  pdef->addStartState(make_state(space, source[0], source[1])); // TO DO: HOW TO GET START LOCATION FROM GRAPH?
   pdef->setGoalState(make_state(space, target[0], target[1]));
 
   // Setup planner
@@ -158,7 +138,7 @@ int main(int argc, char *argv[])
     // Display path and specify path size
     auto path = std::dynamic_pointer_cast<ompl::geometric::PathGeometric>(pdef->getSolutionPath());
     std::cout << "Solution Path Cost: " << planner.getBestPathCost() << std::endl;
-    displayPath(obstacleLocation, path);
+    displayPath(world, path);
     return 0;
   }
 
