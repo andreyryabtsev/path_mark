@@ -4,11 +4,8 @@
 #include <iostream>
 
 int main() {
-    World w("../resources/worlds/test.world");
-    std::vector<double> initState;
-    double initStateArray[3] = {0.1, 1.2, -0.7};
-    initState.assign(initStateArray, initStateArray + 3);
-    NLinkArm<3> arm(initState);
+    World w("../resources/out/world_out.world");
+    NLinkArm<2> arm(w.getStartPosition());
     Renderer r = visualizer::openVisualizer();
     r.draw(w);
     r.draw(arm);

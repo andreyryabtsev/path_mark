@@ -28,8 +28,8 @@ bool World::lineInCollision(const Line& l) const {
     return false;
 }
 
-int World::getStartId() const { return start_node_; }
-int World::getTargetId() const { return target_node_; }
+std::vector<double> World::getStartPosition() const { return mStartPosition; }
+std::vector<double> World::getTargetPosition() const { return mTargetPosition; }
 
 World::World() {
     obstacles_ = std::vector<Rect>();
@@ -40,7 +40,21 @@ World::World(const std::string& filepath) {
     std::ifstream worldfile;
     worldfile.open(filepath);
     if (!worldfile.is_open()) throw;
-    worldfile >> graph_name_ >> start_node_ >> target_node_;
+
+    int dim;
+    worldfile >> graph_name_ >> dim;
+    mStartPosition = std::vector<double>();
+    mTargetPosition = std::vector<double>();
+    double tmp;
+    for(int i = 0; i < dim; i++) {
+        worldfile >> tmp;
+        mStartPosition.push_back(tmp);
+    }
+    for(int i = 0; i < dim; i++) {
+        worldfile >> tmp;
+        mTargetPosition.push_back(tmp);
+    }
+
     int numObstacles;
     worldfile >> numObstacles;
     for(int i = 0; i < numObstacles; i++) {

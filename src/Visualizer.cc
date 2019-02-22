@@ -8,8 +8,8 @@
 namespace visualizer {
 
 // constants for internal events and default window size
-#define SIZE_X 600
-#define SIZE_Y 600
+#define SIZE_X 1000
+#define SIZE_Y 1000
 #define EXIT_CODE 0
 #define REDRAW_CODE 1
 

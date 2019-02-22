@@ -35,8 +35,8 @@ def rectsCollide(rect1, rect2):
     return not (rect1['x2'] < rect2['x1'] or rect1['x1'] > rect2['x2'] or rect1['y2'] < rect2['y1'] or rect1['y1'] > rect2['y2'])
 
 def armCollides(obstacle, pos):
-    curX = 0.0
-    curY = 0.0
+    curX = 0.5
+    curY = 0.5
     curTheta = pos[0]
     for i in range(len(pos) - 1):
         link = {'x1': curX, 'y1': curY, 'x2': curX + LINK_LENGTH * math.cos(curTheta), 'y2': curY + LINK_LENGTH * math.sin(curTheta)}
@@ -114,7 +114,15 @@ if __name__ == "__main__":
         appendObstacle(obstacles, startCoords, targetCoords)
 
     with open(out_location, 'w') as f:
-        f.write("%s %d %d\n" % (args.graphFile, start, target))
+        f.write("%s %d\n" % (args.graphFile, args.dimension))
+        f.write("%f" % startCoords[0])
+        for i in range(1, args.dimension):
+            f.write(" %f" % startCoords[i])
+        f.write("\n")
+        f.write("%f" % targetCoords[0])
+        for i in range(1, args.dimension):
+            f.write(" %f" % targetCoords[i])
+        f.write("\n")
         f.write("%s\n" % n)
         for o in obstacles:
             f.write("%f %f %f %f\n" % (o['x1'], o['y1'], o['x2'], o['y2']))

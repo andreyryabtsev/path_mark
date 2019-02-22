@@ -24,6 +24,10 @@ void Renderer::draw(const Drawable& d) {
 void Renderer::drawLine(const Line& l) {
     Line sl = scaleLine(l);
     SDL_RenderDrawLine(sdl_renderer, sl.x1, sl.y1, sl.x2, sl.y2);
+    SDL_RenderDrawLine(sdl_renderer, sl.x1-1, sl.y1, sl.x2-1, sl.y2);
+    SDL_RenderDrawLine(sdl_renderer, sl.x1+1, sl.y1, sl.x2+1, sl.y2);
+    SDL_RenderDrawLine(sdl_renderer, sl.x1, sl.y1-1, sl.x2, sl.y2-1);
+    SDL_RenderDrawLine(sdl_renderer, sl.x1, sl.y1+1, sl.x2, sl.y2+1);
 }
 
 void Renderer::fillRect(const Rect& r) {
