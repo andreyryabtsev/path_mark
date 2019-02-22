@@ -4,6 +4,7 @@
 #include "Visualizer.h"
 #include "World.h"
 #include "Renderer.h"
+#include <unistd.h>
 
 namespace visualizer {
 
@@ -18,7 +19,7 @@ namespace visualizer {
 SDL_Window* window = nullptr;
 SDL_Renderer* renderer = nullptr;
 bool windowOpen = false;
-std::thread *loopThread;
+std::thread *loopThread = nullptr, *animationThread = nullptr;
 Uint32 eventType;
 
 
@@ -66,8 +67,28 @@ void closeVisualizer() {
     if(loopThread->joinable()) {
         loopThread->join();
     }
+    if(animationThread->joinable()) {
+        animationThread->join();
+    }
     // thread completed execution, free it
     delete loopThread;
+}
+
+void _animate(Renderer& r, void (*fDraw)(Renderer&, int), int frames, int delay) {
+    for(int i = 0; i < frames; i++) {
+        fDraw(r, i);
+        usleep(delay * 1000);        
+    }
+}
+
+void animate(Renderer& r, void (*fDraw)(Renderer&, int), int frames, int delay) {
+    if(animationThread != nullptr) {
+        if(animationThread->joinable()) {
+            animationThread->join();
+        }
+        delete animationThread;
+    }
+    animationThread = new std::thread(_animate, std::ref(r), fDraw, frames, delay);
 }
 
 void _renderLoop() {

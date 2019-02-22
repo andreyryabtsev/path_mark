@@ -10,6 +10,12 @@ namespace visualizer {
 // push graphics to the window. Throws an exception if window already open
 Renderer openVisualizer();
 
+// Starts an animation using renderer r, for specified number of frames with a certain delay
+// after each frame. The draw function should take in a renderer and a frame index
+// if called after previous animation has not completed, will wait on previous animation to complete
+// before starting this one (and immediately returning)
+void animate(Renderer& r, void (*fDraw)(Renderer&, int), int frames, int delay);
+
 // Closes the current visualizer window and cleans up its thread
 void closeVisualizer();
 }

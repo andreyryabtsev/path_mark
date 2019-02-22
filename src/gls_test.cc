@@ -5,8 +5,6 @@
 #include <sstream>
 #include <queue>
 
-#include <unistd.h>
-
 // Boost libraries
 #include <boost/shared_ptr.hpp>
 #include <boost/property_map/dynamic_property_map.hpp>
@@ -35,6 +33,22 @@
 
 namespace po = boost::program_options;
 
+void displayPathAnimationFrame(Renderer& r, int i) {
+  auto state = path->getState(i);
+  double* arr_state = state->as<ompl::base::RealVectorStateSpace::StateType>()->values;
+  std::vector<double> vec_state;
+  // not pretty, if ompl types are commonly used PathMark should accept them directly
+  vec_state.assign(arr_state, arr_state + 2);
+  NLinkArm<2> arm(vec_state);
+
+  r.draw(world);
+  r.draw(arm);
+  r.flush();
+}
+std::shared_ptr<ompl::geometric::PathGeometric> animating_path;
+World animating_world;
+
+
 /// Displays path
 /// \param[in] world the World object containing obstacles
 /// \param[in] path OMPL path
@@ -43,27 +57,9 @@ void displayPath(World world,
 {
   // Get rendering capability from PathMark and open window
   Renderer r = visualizer::openVisualizer();
-
-  // Get state count
-  int pathSize = path->getStateCount();
-  NLinkArm<2> arm();
-
-  // this loop animates using thread sleep.
-  // in the future, PathMark should handle animating a path (given as vector of state vectors or similar)
-  for (int i = 0; i < pathSize; ++i)
-  {
-    auto state = path->getState(i);
-    double* arr_state = state->as<ompl::base::RealVectorStateSpace::StateType>()->values;
-    std::vector<double> vec_state;
-    // not pretty, if ompl types are commonly used PathMark should accept them directly
-    vec_state.assign(arr_state, arr_state + 2);
-    arm.setState(vec_state);
-
-
-    r.draw(world); // draw the world
-    r.draw(arm); // and the arm on top of it at the current moment
-    usleep(16000); // sleep until next frame
-  }
+  animating_path = path;
+  animating_world = world;
+  visualizer::animate(r, displayPathAnimationFrame, path->getStateCount(), 16);
 
   std::cin.get();
   visualizer::closeVisualizer();
