@@ -20,10 +20,14 @@ def getDistance(a, b):
         sum += (b[i] - a[i]) ** 2
     return math.sqrt(sum)
 
+def ccw(Ax, Ay, Bx, By, Cx, Cy):
+    return (Cy-Ay) * (Bx-Ax) > (By-Ay) * (Cx-Ax)
+
 def linesCollide(line1, line2):
-    uA = ((line2['x2']-line2['x1'])*(line1['y1']-line2['y1']) - (line2['y2']-line2['y1'])*(line1['x1']-line2['x1'])) / ((line2['y2']-line2['y1'])*(line1['x2']-line1['x1']) - (line2['x2']-line2['x1'])*(line1['y2']-line1['y1']));
-    uB = ((line1['x2']-line1['x1'])*(line1['y1']-line2['y1']) - (line1['y2']-line1['y1'])*(line1['x1']-line2['x1'])) / ((line2['y2']-line2['y1'])*(line1['x2']-line1['x1']) - (line2['x2']-line2['x1'])*(line1['y2']-line1['y1']));
-    return uA >= 0 and uA and 1 and uB >= 0 and uB <= 1
+    return ccw(line1['x1'], line1['y1'], line2['x1'], line2['y1'], line2['x2'], line2['y2']) != \
+        ccw(line1['x2'], line1['y2'], line2['x1'], line2['y1'], line2['x2'], line2['y2']) and \
+        ccw(line1['x1'], line1['y1'], line1['x2'], line1['y2'], line2['x1'], line2['y1']) != \
+        ccw(line1['x1'], line1['y1'], line1['x2'], line1['y2'], line2['x2'], line2['y2'])
 
 def rectCollidesWithLine(rect, line):
     return linesCollide({'x1': rect['x1'], 'y1': rect['y1'], 'x2': rect['x2'], 'y2': rect['y1']}, line) or \
@@ -38,13 +42,14 @@ def armCollides(obstacle, pos):
     curX = 0.5
     curY = 0.5
     curTheta = pos[0]
-    for i in range(len(pos) - 1):
+    for i in range(len(pos)):
         link = {'x1': curX, 'y1': curY, 'x2': curX + LINK_LENGTH * math.cos(curTheta), 'y2': curY + LINK_LENGTH * math.sin(curTheta)}
         if (rectCollidesWithLine(obstacle, link)):
             return True
-        curX = link['x2']
-        curY = link['y2']
-        curTheta = pos[i + 1]
+        if i < len(pos) - 1:
+            curX = link['x2']
+            curY = link['y2']
+            curTheta += pos[i + 1]
     return False
 
 
@@ -67,7 +72,7 @@ def appendObstacle(obstacles, pos1, pos2):
         return
 
 
-def randomizeStartAndTarget(graph_file, d):
+def randomizeStartAndTarget(graph_file, d, scale = math.pi * 2):
     graph = nx.read_graphml(graph_file)
     n = graph.number_of_nodes()
     # want to get two points that are 0.35 (arbitrary) * sqrt(d) away from each other in n-d for start and end
@@ -79,6 +84,9 @@ def randomizeStartAndTarget(graph_file, d):
     while (getDistance(n1, n2) < min_d):
         i2 = random.randint(0, n)
         n2 = getCoords(graph.nodes[str(i2)]["state"])
+    for i in range(d):
+        n1[i] *= scale
+        n2[i] *= scale
     return i1, i2, n1, n2
 
 # Main Function

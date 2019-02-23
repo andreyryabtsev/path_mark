@@ -19,6 +19,7 @@ std::vector<double> getInterpolation(const std::vector<double>& start, const std
 }
 
 void animate(Renderer& r, int i) {
+	i++;
 	arm.setState(getInterpolation(w.getStartPosition(), w.getTargetPosition(), i / (double)ANIM));
 	r.draw(w);
 	r.draw(arm);

@@ -27,26 +27,31 @@
 #include <opencv2/highgui/highgui.hpp>
 
 // Custom header files
-#include "gls/GLS.hpp"
-#include "gls/event/ShortestPathEvent.hpp"
-#include "gls/selector/ForwardSelector.hpp"
+#include <gls/GLS.hpp>
+#include <gls/event/ShortestPathEvent.hpp>
+#include <gls/selector/ForwardSelector.hpp>
+
+#include "NLinkArm.h"
+#include "Visualizer.h"
+#include "World.h"
 
 namespace po = boost::program_options;
 
+
+std::shared_ptr<ompl::geometric::PathGeometric> animating_path;
+World animating_world;
 void displayPathAnimationFrame(Renderer& r, int i) {
-  auto state = path->getState(i);
+  auto state = animating_path->getState(i);
   double* arr_state = state->as<ompl::base::RealVectorStateSpace::StateType>()->values;
   std::vector<double> vec_state;
   // not pretty, if ompl types are commonly used PathMark should accept them directly
   vec_state.assign(arr_state, arr_state + 2);
   NLinkArm<2> arm(vec_state);
 
-  r.draw(world);
+  r.draw(animating_world);
   r.draw(arm);
   r.flush();
 }
-std::shared_ptr<ompl::geometric::PathGeometric> animating_path;
-World animating_world;
 
 
 /// Displays path
@@ -61,6 +66,7 @@ void displayPath(World world,
   animating_world = world;
   visualizer::animate(r, displayPathAnimationFrame, path->getStateCount(), 16);
 
+  std::cout << "anim started" << std::endl;
   std::cin.get();
   visualizer::closeVisualizer();
 }
@@ -68,8 +74,8 @@ void displayPath(World world,
 bool isPointValid(World w, const ompl::base::State *state) {
   double* values = state->as<ompl::base::RealVectorStateSpace::StateType>()->values;
   std::vector<double> vector_state;
-  vector_state.assign(values + 2); // 2 dimensions
-  return NLinkArm<2>.inCollision(vector_state, w);
+  vector_state.assign(values, values + 2); // 2 dimensions
+  return NLinkArm<2>::inCollision(vector_state, w);
 }
 
 /// Creates an OMPL state from state values.
@@ -87,10 +93,10 @@ make_state(const ompl::base::StateSpacePtr space, double x, double y)
 }
 
 /// The main function.
-int main(int argc, char *argv[])
+int main() //int argc, char *argv[])
 {
   std::string graphLocation = "../resources/graphs/graph_400.graphml";
-  std::string worldLocation = "../resources/worlds/test.world";
+  std::string worldLocation = "../resources/out/world_out.world";
 
   // Define the state space: R^2
   auto space = std::make_shared<ompl::base::RealVectorStateSpace>(2);
@@ -108,7 +114,9 @@ int main(int argc, char *argv[])
 
   // Problem Definition
   ompl::base::ProblemDefinitionPtr pdef(new ompl::base::ProblemDefinition(si));
-  pdef->addStartState(make_state(space, source[0], source[1])); // TO DO: HOW TO GET START LOCATION FROM GRAPH?
+  auto source = world.getStartPosition();
+  auto target = world.getTargetPosition();
+  pdef->addStartState(make_state(space, source[0], source[1]));
   pdef->setGoalState(make_state(space, target[0], target[1]));
 
   // Setup planner
