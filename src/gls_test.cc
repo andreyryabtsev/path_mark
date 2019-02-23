@@ -75,6 +75,8 @@ bool isPointValid(World w, const ompl::base::State *state) {
   double* values = state->as<ompl::base::RealVectorStateSpace::StateType>()->values;
   std::vector<double> vector_state;
   vector_state.assign(values, values + 2); // 2 dimensions
+  bool m = NLinkArm<2>::inCollision(vector_state, w);
+  std::cout << m;
   return NLinkArm<2>::inCollision(vector_state, w);
 }
 
@@ -95,7 +97,7 @@ make_state(const ompl::base::StateSpacePtr space, double x, double y)
 /// The main function.
 int main() //int argc, char *argv[])
 {
-  std::string graphLocation = "../resources/graphs/graph_400.graphml";
+  std::string graphLocation = "../resources/out/testgraph_graph_0.graphml";
   std::string worldLocation = "../resources/out/world_out.world";
 
   // Define the state space: R^2
@@ -118,6 +120,7 @@ int main() //int argc, char *argv[])
   auto target = world.getTargetPosition();
   pdef->addStartState(make_state(space, source[0], source[1]));
   pdef->setGoalState(make_state(space, target[0], target[1]));
+  std::cout << "(" << source[0] << ", " << source[1] << ") to (" << target[0] << ", " << target[1] << ")";
 
   // Setup planner
   gls::GLS planner(si);

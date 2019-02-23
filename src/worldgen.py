@@ -72,7 +72,7 @@ def appendObstacle(obstacles, pos1, pos2):
         return
 
 
-def randomizeStartAndTarget(graph_file, d, scale = math.pi * 2):
+def randomizeStartAndTarget(graph_file, d, scale = True):
     graph = nx.read_graphml(graph_file)
     n = graph.number_of_nodes()
     # want to get two points that are 0.35 (arbitrary) * sqrt(d) away from each other in n-d for start and end
@@ -84,9 +84,10 @@ def randomizeStartAndTarget(graph_file, d, scale = math.pi * 2):
     while (getDistance(n1, n2) < min_d):
         i2 = random.randint(0, n)
         n2 = getCoords(graph.nodes[str(i2)]["state"])
-    for i in range(d):
-        n1[i] *= scale
-        n2[i] *= scale
+    if scale:
+        for i in range(d):
+            n1[i] = (n1[i] - 0.5) * 2 * math.pi
+            n2[i] = (n2[i] - 0.5) * 2 * math.pi
     return i1, i2, n1, n2
 
 # Main Function
@@ -113,7 +114,7 @@ if __name__ == "__main__":
 
     MIN_SEPARATION = args.separation
     n = args.count
-    out_location = '/home/andrey/workspaces/path_mark/resources/out/' + args.out
+    out_location = '../resources/out/' + args.out
 
     # first come up with start and target
     start, target, startCoords, targetCoords = randomizeStartAndTarget(args.graphFile, args.dimension)
@@ -123,15 +124,15 @@ if __name__ == "__main__":
 
     with open(out_location, 'w') as f:
         f.write("%s %d\n" % (args.graphFile, args.dimension))
-        f.write("%f" % startCoords[0])
+        f.write("%lf" % startCoords[0])
         for i in range(1, args.dimension):
-            f.write(" %f" % startCoords[i])
+            f.write(" %lf" % startCoords[i])
         f.write("\n")
-        f.write("%f" % targetCoords[0])
+        f.write("%lf" % targetCoords[0])
         for i in range(1, args.dimension):
-            f.write(" %f" % targetCoords[i])
+            f.write(" %lf" % targetCoords[i])
         f.write("\n")
         f.write("%s\n" % n)
         for o in obstacles:
-            f.write("%f %f %f %f\n" % (o['x1'], o['y1'], o['x2'], o['y2']))
+            f.write("%lf %lf %lf %lf\n" % (o['x1'], o['y1'], o['x2'], o['y2']))
     
