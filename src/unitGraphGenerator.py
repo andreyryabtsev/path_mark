@@ -197,7 +197,7 @@ if __name__ == "__main__":
 
     # Settings
     if disc_radius < 0:
-        disc_radius = 2*halton_points**(-1.0/space_dim)
+        disc_radius = 2*halton_points**(-1.0/space_dim) * (2 * math.pi)
 
     for i in range(0, args.reps):
         print "[unitGraphGenerator]: Generating graph " + `i`

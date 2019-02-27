@@ -64,9 +64,9 @@ void displayPath(World world,
   Renderer r = visualizer::openVisualizer();
   animating_path = path;
   animating_world = world;
-  visualizer::animate(r, displayPathAnimationFrame, path->getStateCount(), 16);
+  visualizer::animate(r, displayPathAnimationFrame, path->getStateCount(), 300);
 
-  std::cout << "anim started" << std::endl;
+  std::cout << "anim started, frame count: "<< path->getStateCount() << std::endl;
   std::cin.get();
   visualizer::closeVisualizer();
 }
@@ -75,9 +75,9 @@ bool isPointValid(World w, const ompl::base::State *state) {
   double* values = state->as<ompl::base::RealVectorStateSpace::StateType>()->values;
   std::vector<double> vector_state;
   vector_state.assign(values, values + 2); // 2 dimensions
-  bool m = NLinkArm<2>::inCollision(vector_state, w);
+  bool m = !NLinkArm<2>::inCollision(vector_state, w);
   std::cout << m;
-  return NLinkArm<2>::inCollision(vector_state, w);
+  return !NLinkArm<2>::inCollision(vector_state, w);
 }
 
 /// Creates an OMPL state from state values.
@@ -102,7 +102,7 @@ int main() //int argc, char *argv[])
 
   // Define the state space: R^2
   auto space = std::make_shared<ompl::base::RealVectorStateSpace>(2);
-  space->as<ompl::base::RealVectorStateSpace>()->setBounds(0.0, 1.0);
+  space->as<ompl::base::RealVectorStateSpace>()->setBounds(-3.15, 3.15);
   space->setLongestValidSegmentFraction(0.1 / space->getMaximumExtent());
   space->setup();
 
@@ -120,7 +120,6 @@ int main() //int argc, char *argv[])
   auto target = world.getTargetPosition();
   pdef->addStartState(make_state(space, source[0], source[1]));
   pdef->setGoalState(make_state(space, target[0], target[1]));
-  std::cout << "(" << source[0] << ", " << source[1] << ") to (" << target[0] << ", " << target[1] << ")";
 
   // Setup planner
   gls::GLS planner(si);

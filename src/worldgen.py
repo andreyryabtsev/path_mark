@@ -72,7 +72,7 @@ def appendObstacle(obstacles, pos1, pos2):
         return
 
 
-def randomizeStartAndTarget(graph_file, d, scale = True):
+def randomizeStartAndTarget(graph_file, d, scale = False):
     graph = nx.read_graphml(graph_file)
     n = graph.number_of_nodes()
     # want to get two points that are 0.35 (arbitrary) * sqrt(d) away from each other in n-d for start and end
