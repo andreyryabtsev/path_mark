@@ -4,9 +4,10 @@
 #include <unistd.h>
 #include <iostream>
 #include <sstream>
+#include <boost/program_options.hpp>
 
-#define DIM 4
 #define ANIM 150
+static unsigned int DIM = 3;
 
 NLinkArm *arm;
 World w;
@@ -30,6 +31,17 @@ void animate(Renderer& r, int i) {
 }
 
 int main() {
+    // po::options_description desc("2D Map Test Options");
+    // desc.add_options()
+    //   ("dimension,d", po::value<int>()->default_value(-1), "dimension count")
+    // ;
+
+    // // Read arguments
+    // po::variables_map vm;
+    // po::store(po::parse_command_line(argc, argv, desc), vm);
+    // po::notify(vm);
+    // DIM = max(DIM, vm["dimension"].as<int>());
+
     std::stringstream ss;
     ss << "../resources/out/world" << DIM << ".world";
     w = World(ss.str());

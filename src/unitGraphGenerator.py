@@ -134,7 +134,11 @@ def euclidean_halton_graph(n, radius, bases, offset, space_dim, priors, obstacle
 
     for i in range(n-1):     
         for j in range(i+1,n):
-            if numpy.linalg.norm(position[i]-position[j]) < radius:
+            # coords are (-pi, pi), so wrap-around distance is 
+            # min(abs(a-b), 2 * math.pi - abs(a-b)))
+            distance = numpy.array([min(abs(position[i][k] - position[j][k]), 
+                2 * math.pi - abs(position[i][k] - position[j][k])) for k in range(space_dim)])
+            if numpy.linalg.norm(distance) < radius:
                 if priors:
                     pFree = computePrior(position[i], position[j], obstacleFile)
                     G.add_edge(i, j, prior = str(pFree))
@@ -207,3 +211,4 @@ if __name__ == "__main__":
         saveFile = default_graph_location + args.graphFile + '_graph_' + `i` + '.pdf'
         if args.visualize:
             visualize(riskmapFile, obstacleFile, saveFile)
+    print "all graphs generated"
