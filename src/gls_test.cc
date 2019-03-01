@@ -37,8 +37,8 @@
 
 #include <cmath>
 
-#define DIM 4
 #define FRAMES 300
+static unsigned int DIM = 4;
 
 namespace po = boost::program_options;
 
@@ -51,7 +51,7 @@ void displayPathAnimationFrame(Renderer& r, int i) {
   std::vector<double> vec_state;
   // not pretty, if ompl types are commonly used PathMark should accept them directly
   vec_state.assign(arr_state, arr_state + DIM);
-  NLinkArm<DIM> arm(vec_state);
+  NLinkArm arm(DIM, vec_state);
 
   r.draw(animating_world);
   r.draw(arm);
@@ -81,11 +81,11 @@ bool isPointValid(World w, const ompl::base::State *state) {
   double* values = state->as<ompl::base::RealVectorStateSpace::StateType>()->values;
   std::vector<double> vector_state;
   vector_state.assign(values, values + DIM); // 2 dimensions
-  // bool m = !NLinkArm<DIM>::inCollision(vector_state, w); // debug output spam
+  // bool m = !NLinkArm::inCollision(vector_state, w); // debug output spam
   // std::cout << "checking (" << vector_state[0];
   // for (int i = 1; i < DIM; i++) std::cout << ", " << vector_state[i];
   // std::cout << ")" << " >> " << m << std::endl;
-  return !NLinkArm<DIM>::inCollision(vector_state, w);
+  return !NLinkArm::inCollision(vector_state, w);
 }
 
 /// Creates an OMPL state from state values.
@@ -102,8 +102,20 @@ make_state(const ompl::base::StateSpacePtr space, std::vector<double> coords)
 }
 
 /// The main function.
-int main() //int argc, char *argv[])
+int main(int argc, char *argv[])
 {
+  po::options_description desc("2D Map Test Options");
+  desc.add_options()
+      ("dimension,d", po::value<int>()->default_value(3), "dimension count")
+  ;
+
+  // Read arguments
+  po::variables_map vm;
+  po::store(po::parse_command_line(argc, argv, desc), vm);
+  po::notify(vm);
+  DIM = vm["dimension"].as<int>();
+
+
   std::stringstream ssw, ssg;
   ssw << "../resources/out/world" << DIM << ".world";
   ssg << "../resources/out/g" << DIM << "_graph_0.graphml";
@@ -112,13 +124,13 @@ int main() //int argc, char *argv[])
 
   // Define the state space: R^2
   auto space = std::make_shared<ompl::base::RealVectorStateSpace>(DIM);
-  space->as<ompl::base::RealVectorStateSpace>()->setBounds(-3.15, 3.15);
+  space->as<ompl::base::RealVectorStateSpace>()->setBounds(-M_PI, M_PI);
   space->setLongestValidSegmentFraction(0.1 / space->getMaximumExtent());
   space->setup();
 
   // Space Information
   World world(worldLocation);
-  NLinkArm<DIM> arm();
+  NLinkArm arm(DIM);
   std::function<bool(const ompl::base::State*)> isStateValid = std::bind(isPointValid, world, std::placeholders::_1);
   ompl::base::SpaceInformationPtr si(new ompl::base::SpaceInformation(space));
   si->setStateValidityChecker(isStateValid);
@@ -136,7 +148,7 @@ int main() //int argc, char *argv[])
   // Setup planner
   gls::GLS planner(si);
   planner.setConnectionRadius(0.04);
-  planner.setCollisionCheckResolution(0.04);
+  planner.setCollisionCheckResolution(0.01);
   planner.setRoadmapFilename(graphLocation);
 
   auto event = std::make_shared<gls::event::ShortestPathEvent>();
@@ -159,6 +171,8 @@ int main() //int argc, char *argv[])
     std::cout << "Solution Path Cost: " << planner.getBestPathCost() << std::endl;
     displayPath(world, path);
     return 0;
+  } else {
+    std::cout << "NO SOLUTION" << std::endl;
   }
 
   return -1;

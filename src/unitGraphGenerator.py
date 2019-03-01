@@ -113,6 +113,11 @@ def visualize(graphFile, obstacleFile, saveFile):
     plt.show()
     plt.savefig(saveFile)
 
+def stringify(position, space_dim):
+    v = `position[0]`
+    for m in range(1, space_dim):
+        v += ' ' + `position[m]`
+    return v
 
 # Halton Graph Generator
 def euclidean_halton_graph(n, radius, bases, offset, space_dim, priors, obstacleFile):
@@ -121,14 +126,7 @@ def euclidean_halton_graph(n, radius, bases, offset, space_dim, priors, obstacle
 
     position = {i-1 : scale(numpy.array([halton_sequence_value(i,base) for base in bases]) + offset) for i in range(1, n+1)}
 
-    if space_dim == 2:
-        state = {i: `position[i][0]` + ' ' + `position[i][1]` for i in position.keys()}
-    
-    if space_dim == 3:
-        state = {i: `position[i][0]` + ' ' + `position[i][1]`+ ' ' +`position[i][2]` for i in position.keys()}
-
-    if space_dim == 4:
-        state = {i: `position[i][0]` + ' ' + `position[i][1]` + ' ' + `position[i][2]` + ' ' + `position[i][3]` for i in position.keys()}
+    state = {i: stringify(position[i], space_dim) for i in position.keys()}
 
     for i in range(n):
         node_id = i
@@ -188,12 +186,8 @@ if __name__ == "__main__":
 
     savePrior = args.prior
 
-    if space_dim == 2:
-        bases = [2,3]
-    if space_dim == 3:
-        bases = [2,3,5]
-    if space_dim == 4:
-        bases = [2,3,5,7]
+    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197]
+    bases = primes[0:space_dim]
 
     # Settings
     if disc_radius < 0:

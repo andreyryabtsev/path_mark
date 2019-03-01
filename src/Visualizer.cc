@@ -38,6 +38,7 @@ Renderer openVisualizer() {
         SDL_Quit();
         throw;
     }
+    SDL_SetWindowPosition(window, 2000, SDL_WINDOWPOS_UNDEFINED);
     if((eventType = SDL_RegisterEvents(1)) == ((Uint32)-1)) {
         std::cerr << "could not register event: " << SDL_GetError() << std::endl;
         SDL_Quit();

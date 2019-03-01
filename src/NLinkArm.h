@@ -15,23 +15,22 @@ start at (0.5, 0.5) and extend links of length 0.15 from there.
 #define ROOT_X 0.5
 #define ROOT_Y 0.5
 
-template <int N>
 class NLinkArm : public Robot {
  public:
     // Default constructor is an arm extended right.
-    NLinkArm() {
-        for(int i = 0; i < N; i++) mState.push_back(0.0);
+    NLinkArm(unsigned int n) : mN(n){
+        for(unsigned int i = 0; i < mN; i++) mState.push_back(0.0);
     }
 
     // Constructor that accepts an initial state
-    NLinkArm(std::vector<double> state) {
-        assert(state.size() == N);
+    NLinkArm(unsigned int n, std::vector<double> state) : mN(n) {
+        assert(state.size() == mN);
         mState = state;
     }
 
     // Updates the state to what is represented in state
     void setState(std::vector<double> state) {
-        assert(state.size() == N);
+        assert(state.size() == mN);
         mState = state;
     }
 
@@ -42,7 +41,6 @@ class NLinkArm : public Robot {
 
     // Static helper that compares an arbitrary state of an N link arm with a world.
     static bool inCollision(const std::vector<double> &state, const World &world) {
-        assert(state.size() == N);
         // use world's line collision checker to ensure all links do not collide
         for (Line link : toLineArray(state)) {
             if (world.lineInCollision(link)) return true;
@@ -82,6 +80,8 @@ class NLinkArm : public Robot {
     // is an angle of rotation relative to pointing right (for 0th element) or
     // relative to the direction of the previous link (all others).
     std::vector<double> mState;
+    // number of links
+    unsigned int mN;
 };
 
 #endif
