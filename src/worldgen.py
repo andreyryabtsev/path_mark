@@ -23,6 +23,12 @@ def getDistance(a, b):
 def ccw(Ax, Ay, Bx, By, Cx, Cy):
     return (Cy-Ay) * (Bx-Ax) > (By-Ay) * (Cx-Ax)
 
+def radiusToCenter(obs):
+    return min(((obs['x1'] - 0.5) ** 2 + (obs['y1'] - 0.5) ** 2) ** 0.5,\
+                ((obs['x1'] - 0.5) ** 2 + (obs['y2'] - 0.5) ** 2) ** 0.5,\
+                ((obs['x2'] - 0.5) ** 2 + (obs['y1'] - 0.5) ** 2) ** 0.5,\
+                ((obs['x2'] - 0.5) ** 2 + (obs['y2'] - 0.5) ** 2) ** 0.5)
+
 def linesCollide(line1, line2):
     return ccw(line1['x1'], line1['y1'], line2['x1'], line2['y1'], line2['x2'], line2['y2']) != \
         ccw(line1['x2'], line1['y2'], line2['x1'], line2['y1'], line2['x2'], line2['y2']) and \
@@ -64,6 +70,9 @@ def appendObstacle(obstacles, pos1, pos2):
         #verify this obstacle is well-separated, else try again
         if (armCollides(obs, pos1) or armCollides(obs, pos2)):
             continue
+        #verify this obstacle is more than LINK_LENGTH away from center
+        if (radiusToCenter(obs) < LINK_LENGTH):
+            continue
         # rectangular box expansion
         bigObs = {'x1': obs['x1'] - MIN_SEPARATION, 'x2': obs['x2'] + MIN_SEPARATION, 'y1': obs['y1'] - MIN_SEPARATION, 'y2': obs['y2'] + MIN_SEPARATION}
         if any(rectsCollide(bigObs, oldObs) for oldObs in obstacles):
@@ -97,7 +106,7 @@ if __name__ == "__main__":
     parser.add_argument('-d', '--dimension', type=int, default=2,
                         help='Dimension of the planning space')
 
-    parser.add_argument('-o', '--out', type=str, default='world_out.world',
+    parser.add_argument('-o', '--out', type=str, default='../resources/out/world_out.world',
                         help='Name of the graphml file')
 
     parser.add_argument('-f', '--graphFile', type=str, default='NONE',
@@ -114,7 +123,7 @@ if __name__ == "__main__":
 
     MIN_SEPARATION = args.separation
     n = args.count
-    out_location = '../resources/out/' + args.out
+    out_location = args.out
 
     # first come up with start and target
     start, target, startCoords, targetCoords = randomizeStartAndTarget(args.graphFile, args.dimension)

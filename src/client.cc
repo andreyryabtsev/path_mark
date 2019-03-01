@@ -3,9 +3,10 @@
 #include "World.h"
 #include <unistd.h>
 #include <iostream>
+#include <sstream>
 
-#define DIM 2
-#define ANIM 100
+#define DIM 4
+#define ANIM 300
 
 NLinkArm<DIM> arm;
 World w;
@@ -29,7 +30,9 @@ void animate(Renderer& r, int i) {
 }
 
 int main() {
-    w = World("../resources/out/world_out.world");
+    std::stringstream ss;
+    ss << "../resources/out/world" << DIM << ".world";
+    w = World(ss.str());
     arm = NLinkArm<DIM>(w.getStartPosition());
     Renderer r = visualizer::openVisualizer();
     r.draw(w);
