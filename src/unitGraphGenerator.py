@@ -138,12 +138,13 @@ def euclidean_halton_graph(n, radius, bases, offset, space_dim, priors, obstacle
             # min(abs(a-b), 2 * math.pi - abs(a-b)))
             distance = numpy.array([min(abs(position[i][k] - position[j][k]), 
                 2 * math.pi - abs(position[i][k] - position[j][k])) for k in range(space_dim)])
-            if numpy.linalg.norm(distance) < radius:
+            distance = numpy.linalg.norm(distance)
+            if distance < radius:
                 if priors:
                     pFree = computePrior(position[i], position[j], obstacleFile)
                     G.add_edge(i, j, prior = str(pFree))
                 else:
-                    G.add_edge(i, j)
+                    G.add_edge(i, j, length = str(distance))
     return G
 
 # Main Function

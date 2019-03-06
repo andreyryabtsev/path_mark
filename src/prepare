@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+python ../src/unitGraphGenerator.py -d $1 -n 1000 -f g$1
+python3 ../src/worldgen.py -f ../resources/out/g$1_graph_0.graphml -o ../resources/out/world$1.world -d $1 -n 14 -s 0.09
