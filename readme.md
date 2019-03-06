@@ -23,6 +23,9 @@ std::vector<double> s = world.getStartPosition(),
 NLinkArm arm(3, world.getStartPosition());
 arm.setState(world.getTargetPosition());
 
+// Can also check if an arm instance collides with a world:
+arm.inCollision(world);
+
 
 // To visualize the robot, the visualizer must be opened:
 // openVisualizer() opens the window for PathMark and returns a Renderer that draws to it.
