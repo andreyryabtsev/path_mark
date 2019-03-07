@@ -53,8 +53,9 @@ void displayPathAnimationFrame(Renderer& r, int i) {
 
 Then, can invoke the animation as follows:
 ```c++
-// Using renderer r, call this draw function 133 times about 16 ms apart (~60fps)
+// Using renderer r, call this draw function 133 times about 16 ms apart in separate thread (~60fps)
 visualizer::animate(r, displayPathAnimationFrame, 133, 16);
+/* do something else or simply wait for animation to finish here*/
 
 // Close the visualization window.
 visualizer::closeVisualizer();
