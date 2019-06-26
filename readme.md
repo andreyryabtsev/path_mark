@@ -2,7 +2,7 @@ Concise instructions to use path_mark:
 
 First, make sure SDL2 is installed (`apt-get install libsdl2-dev`)
 
-There are two scripts, unitGraphGenerator.py and worldgen.py. A helper script that can be modified is called prepare. It can be invoked with `./prepare 3` to generate a graph and a world for a 3-link arm, as an example. A link arm has length 0.15, so invoking worldgen.py with min separation (`-s`) < 0.15 has a risk of producing unsolvable worlds. Increasing this value means number of obstacles (`-n`) may need to be lowered to prevent worldgen from being stuck in a loop.
+There are two scripts, unitGraphGenerator.py and worldgen.py. A helper script that can be modified is called prepare. It can be invoked with `./prepare 3` to generate a graph and a world for a 3-link arm, as an example. A link arm has length 0.15, so invoking worldgen.py with min separation (`-s`) < 0.15 has a risk of producing unsolvable worlds. Lowering this value means number of obstacles (`-n`) may need to be lowered to prevent worldgen from being stuck in a loop.
 
 Once a world is generated, the following can be used in a c++ client program:
 
@@ -53,8 +53,9 @@ void displayPathAnimationFrame(Renderer& r, int i) {
 
 Then, can invoke the animation as follows:
 ```c++
-// Using renderer r, call this draw function 133 times about 16 ms apart (~60fps)
+// Using renderer r, call this draw function 133 times about 16 ms apart in separate thread (~60fps)
 visualizer::animate(r, displayPathAnimationFrame, 133, 16);
+/* do something else or simply wait for animation to finish here*/
 
 // Close the visualization window.
 visualizer::closeVisualizer();
