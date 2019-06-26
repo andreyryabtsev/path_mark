@@ -61,4 +61,6 @@ visualizer::animate(r, displayPathAnimationFrame, 133, 16);
 visualizer::closeVisualizer();
 ```
 
+See `gls_path.cpp` for an example of planning in a world, and then animating the resulting path.
+
 The header files further outline the available functions.
