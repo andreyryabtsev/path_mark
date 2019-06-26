@@ -22,6 +22,8 @@ class NLinkArm : public Robot {
         for(unsigned int i = 0; i < mN; i++) mState.push_back(0.0);
     }
 
+    NLinkArm(const NLinkArm&) = delete;
+
     // Constructor that accepts an initial state
     NLinkArm(unsigned int n, std::vector<double> state) : mN(n) {
         assert(state.size() == mN);
@@ -29,9 +31,13 @@ class NLinkArm : public Robot {
     }
 
     // Updates the state to what is represented in state
-    void setState(std::vector<double> state) {
+    void setState(std::vector<double> state) override {
         assert(state.size() == mN);
         mState = state;
+    }
+
+    unsigned int dimension() override {
+        return mN;
     }
 
     // Returns whether the robot in its current state collides with a World

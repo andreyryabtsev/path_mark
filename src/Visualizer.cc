@@ -4,6 +4,7 @@
 #include "Visualizer.h"
 #include "World.h"
 #include "Renderer.h"
+#include "Animator.h"
 #include <unistd.h>
 
 namespace visualizer {
@@ -25,7 +26,7 @@ Uint32 eventType;
 
 void _renderLoop();
 
-Renderer openVisualizer() {
+std::shared_ptr<Renderer> openVisualizer() {
     if (windowOpen) throw; // currently only support one window at a time
     windowOpen = true;
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -52,7 +53,7 @@ Renderer openVisualizer() {
     loopThread = new std::thread(_renderLoop);
 
     // return a new renderer wrapping SDL's renderer
-    return Renderer(renderer, SIZE_X, SIZE_Y);
+    return std::make_shared<Renderer>(renderer, SIZE_X, SIZE_Y);
 }
 
 void closeVisualizer() {
@@ -75,21 +76,39 @@ void closeVisualizer() {
     delete loopThread;
 }
 
-void _animate(Renderer& r, void (*fDraw)(Renderer&, int), int frames, int delay) {
+void _animate(std::shared_ptr<Renderer> r, void (*fDraw)(std::shared_ptr<Renderer>, int), int frames, int delay) {
     for(int i = 0; i < frames; i++) {
         fDraw(r, i);
         usleep(delay * 1000);        
     }
 }
 
-void animate(Renderer& r, void (*fDraw)(Renderer&, int), int frames, int delay) {
+void _animate2(std::shared_ptr<Renderer> r, Animator& a, int frames, int delay) {
+    for(int i = 0; i < frames; i++) {
+        a.draw(r, i);
+        //std::cout << "frames = " << frames << ", delay = " << delay << ", i = " << i << std::endl;
+        usleep(delay * 1000);        
+    }
+}
+
+void animate(std::shared_ptr<Renderer> r, void (*fDraw)(std::shared_ptr<Renderer>, int), int frames, int delay) {
     if(animationThread != nullptr) {
         if(animationThread->joinable()) {
             animationThread->join();
         }
         delete animationThread;
     }
-    animationThread = new std::thread(_animate, std::ref(r), fDraw, frames, delay);
+    animationThread = new std::thread(_animate, r, fDraw, frames, delay);
+}
+
+void animate(std::shared_ptr<Renderer> r, Animator& a, int frames, int delay) {
+    if(animationThread != nullptr) {
+        if(animationThread->joinable()) {
+            animationThread->join();
+        }
+        delete animationThread;
+    }
+    animationThread = new std::thread(_animate2, r, std::ref(a), frames, delay);
 }
 
 void _renderLoop() {

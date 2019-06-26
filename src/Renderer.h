@@ -16,6 +16,8 @@ class Renderer {
     // Constructs a new renderer using an underlying SDL renderer and dimensions
     Renderer(SDL_Renderer* sdl, int w, int h) : sdl_renderer(sdl), w_(w), h_(h) {}
 
+    Renderer(const Renderer&) = delete;
+
     // Fills the render canvas with the current color
     void clear();
 

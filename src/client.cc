@@ -20,14 +20,14 @@ std::vector<double> getInterpolation(const std::vector<double>& start, const std
     return tmp;
 }
 
-void animate(Renderer& r, int i) {
+void animate(std::shared_ptr<Renderer> r, int i) {
 	i++;
 	arm->setState(getInterpolation(w.getStartPosition(), w.getTargetPosition(), i / (double)ANIM));
     std::cout << arm->inCollision(w);
     std::cout.flush();
-	r.draw(w);
-	r.draw(*arm);
-	r.flush();
+	r->draw(w);
+	r->draw(*arm);
+	r->flush();
 }
 
 int main() {
@@ -46,10 +46,10 @@ int main() {
     ss << "../resources/out/world" << DIM << ".world";
     w = World(ss.str());
     arm = new NLinkArm(DIM, w.getStartPosition());
-    Renderer r = visualizer::openVisualizer();
-    r.draw(w);
-    r.draw(*arm);
-    r.flush();
+    std::shared_ptr<Renderer> r = visualizer::openVisualizer();
+    r->draw(w);
+    r->draw(*arm);
+    r->flush();
 
  	visualizer::animate(r, animate, ANIM, 16); // ~60 fps 
 

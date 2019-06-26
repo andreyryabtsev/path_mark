@@ -14,6 +14,7 @@ class World : public Drawable {
  public:
     // Constructs an empty world
     World();
+    World(const World&) = delete;
     // Reads in a world from a savefile
     World(const std::string& filepath);
     // Gets the start node id in the attached graph

@@ -10,6 +10,8 @@ robots share.
 class Robot : public Drawable{
  public:
     virtual bool inCollision(const World&) = 0;
+    virtual void setState(std::vector<double>) = 0;
+    virtual unsigned int dimension() = 0;
  protected:
 };
 #endif

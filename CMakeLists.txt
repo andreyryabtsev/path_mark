@@ -34,6 +34,8 @@ add_library(${PROJECT_NAME}
     src/World.cc
     src/Visualizer.cc
     src/Renderer.cc
+    src/Animator.h
+    src/Animator.cc
     src/Drawable.h
 )
 
